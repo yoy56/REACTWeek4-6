@@ -6,14 +6,19 @@ export class Wp extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            Wp: props.Wp
+            Wp: this.props.Wp
         }
     }
 
-    componentDidMount = async() =>{
-        const poke = await Jsoninter.Wgrab();
-        this.setState({Wp: poke});
-        dataCalc.setwp(poke);
+    componentDidUpdate(){
+        console.log('update',this.state)
+        if (this.props.Wp != this.state.Wp){
+            this.setState({Wp: this.props.Wp})
+        }
+    }
+
+    componentDidMount(){
+        console.log('Mount',this.state)
     }
 
     render(){

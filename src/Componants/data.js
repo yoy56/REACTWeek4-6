@@ -1,4 +1,5 @@
 import { Jsoninter } from "./JsonInterpret";
+import { ItemsUses } from './ItemsUse';
 
 
 
@@ -8,7 +9,7 @@ class data {
     constructor(){
         this.wp = {};
         this.partner = {Name: "Test",Type1: "Ground",Type2: null, Spec: "Diglett", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"};
-        this.bag = [];
+        this.bag = [{Name:'TestItem',Use:(function(){console.log('Click')}),Type:'Battle',Amount: 5},{Name:'Pokeball',Use:(function(){return(ItemsUses.Pokeball(1))}),Type:'Battle',Amount: 5},{Name:'Ultraball',Use:(function(){return(ItemsUses.Pokeball(2))}),Type:'Battle',Amount: 5}];
     }
 
     getwp(){

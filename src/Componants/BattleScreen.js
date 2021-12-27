@@ -1,6 +1,7 @@
 import React from "react";
 import { Bag } from "./Bag";
 import { dataCalc } from "./data";
+import { Jsoninter } from "./JsonInterpret";
 import { Partner } from "./Partner";
 import { Wp } from "./WP";
 
@@ -10,9 +11,9 @@ export class BattleScreen extends React.Component {
         this.state = {
             Wp: props.Wp,
             Partner: props.Partner,
-            Bag: props.Bag,
-            np: false
+            Bag: props.Bag
         }
+        this.updatenp = this.updatenp.bind(this);
     }
 
     newPoke = async() => {
@@ -22,11 +23,22 @@ export class BattleScreen extends React.Component {
         this.setState({...this.state, Wp: poke})
     }
 
-    componentDidUpdate(){
-        if (this.state.np == true) {
+    updatenp(np){
+        console.log('update2',this.state)
+        if (np == true) {
             this.newPoke();
-            this.setState({...this.state,np: false})
         }
+    }
+
+    componentDidUpdate(){
+        console.log('Update',this.state)
+    }
+
+    componentDidMount = async() =>{
+        const poke = await Jsoninter.Wgrab();
+        this.setState({Wp: poke});
+        dataCalc.setwp(poke);
+        console.log('Mount',this.state)
     }
 
     render(){
@@ -37,7 +49,7 @@ export class BattleScreen extends React.Component {
                 </div>
                 <div className="col">
                     <Partner Partner={this.state.Partner}/>
-                    <Bag Bag={this.state.Bag} Type='Battle' np={this.state.np}/>
+                    <Bag Bag={this.state.Bag} Type='Battle' updatenp={this.updatenp}/>
                 </div>
             </div>
         )

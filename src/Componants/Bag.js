@@ -18,7 +18,7 @@ export class Bag extends React.Component {
         return(
             <div>
                 <ul>
-                    {this.state.Bag.filter((item) => (item.Type === this.state.Type)).map((item,index) => <li key={`${index}`}><Item Item={item} np={this.state.np}/></li>)}
+                    {this.state.Bag.filter((item) => (item.Type === this.state.Type)).map((item,index) => <li key={`${index}`}><Item Item={item} updatenp={this.props.updatenp}/></li>)}
                 </ul>
             </div>
         )
