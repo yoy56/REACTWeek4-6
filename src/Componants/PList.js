@@ -12,7 +12,7 @@ export const Plist = (props) => {
     return(
         <div className="Plist">
             <ul>
-                {ptemp.map((e,i) => {
+                {props.Plist.map((e,i) => {
                     return(
                         <li key={i}>
                             <Pinfo Name={e.Name} Type1={e.Type1} Type2={e.Type2} Spec={e.Spec} setPartner={props.setPartner} img={e.img}/>

@@ -9,36 +9,35 @@ export class BattleScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            Wp: props.Wp,
-            Partner: props.Partner,
-            Bag: props.Bag
+            Wp: this.props.Wp,
+            Partner: this.props.Partner,
+            Bag: this.props.Bag
         }
-        this.updatenp = this.updatenp.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    newPoke = async() => {
-        console.log('np');
-        let poke = await dataCalc.getwp();
-        console.log(poke);
-        this.setState({...this.state, Wp: poke})
-    }
-
-    updatenp(np){
-        console.log('update2',this.state)
-        if (np == true) {
-            this.newPoke();
-        }
-    }
+    
 
     componentDidUpdate(){
-        console.log('Update',this.state)
+        console.log('Update',this.state);
+        if (this.props.Wp != this.state.Wp){
+            this.setState({Wp: this.props.Wp})
+        }
     }
 
     componentDidMount = async() =>{
-        const poke = await Jsoninter.Wgrab();
-        this.setState({Wp: poke});
-        dataCalc.setwp(poke);
+        // const poke = await Jsoninter.Wgrab();
+        // this.setState({Wp: poke});
+        // dataCalc.setwp(poke);
         console.log('Mount',this.state)
+    }
+
+    handleClick = async() =>{
+        console.log('new');
+        const poke = await Jsoninter.Wgrab();
+        console.log(poke);
+        dataCalc.setwp(poke);
+        this.props.updatenp(true);
     }
 
     render(){
@@ -46,10 +45,11 @@ export class BattleScreen extends React.Component {
             <div className="row">
                 <div className="col">
                     <Wp Wp={this.state.Wp} />
+                    <button onClick={this.handleClick}>Find New Pokemon</button>
                 </div>
                 <div className="col">
                     <Partner Partner={this.state.Partner}/>
-                    <Bag Bag={this.state.Bag} Type='Battle' updatenp={this.updatenp}/>
+                    <Bag Bag={this.state.Bag} Type='Battle' updatenp={this.props.updatenp}/>
                 </div>
             </div>
         )

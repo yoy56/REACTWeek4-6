@@ -14,6 +14,11 @@ class ItemUse {
     Pokeball = async(multi) =>{
         if (dataCalc.calcCatch(multi)) {
             console.log('catch');
+            let cpoke = dataCalc.getwp();
+            console.log(cpoke);
+            console.log(dataCalc.getplist());
+            dataCalc.getplist().push(cpoke);
+            console.log(dataCalc.getplist());
             const poke = await Jsoninter.Wgrab();
             console.log(poke);
             dataCalc.setwp(poke);
@@ -22,6 +27,10 @@ class ItemUse {
         console.log('fail');
         return(false)
         
+    }
+
+    StatusItem(Status){
+        dataCalc.setwp(({...dataCalc.getwp(), status: Status}));
     }
 }
 
