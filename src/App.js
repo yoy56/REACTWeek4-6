@@ -11,7 +11,7 @@ import { dataCalc } from './Componants/data';
 function App() {
   return (
     <div className="App">
-      <Index PList={dataCalc.getplist()} Partner={dataCalc.getpartner()} Bag={dataCalc.getbag()} Wp={dataCalc.getwp()}/>
+      <Index/>
     </div>
   );
 }

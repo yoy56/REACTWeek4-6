@@ -17,7 +17,8 @@ export class Partner extends React.Component {
 
     render(){
             return(
-                <div>
+                
+                    this.state.Partner === undefined ? <>No Partner Set</> : <div>
                     <div>
                         {this.state.Partner.Name === null ? <h3>{this.state.Partner.Spec}</h3> : <div>
                             <h3>{this.state.Partner.Name}</h3>
@@ -30,6 +31,8 @@ export class Partner extends React.Component {
                         {this.state.Partner.Type2 === null ? <></> : <img src={`./Types/64px-${this.state.Partner.Type2}IC.png`}/>}
                     </span>
                 </div>
+                
+                
             )
     }
 }

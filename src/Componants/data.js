@@ -1,5 +1,6 @@
 import { Jsoninter } from "./JsonInterpret";
 import { ItemsUses } from './ItemsUse';
+import { AjaxApi } from "./Ajax";
 
 
 
@@ -8,9 +9,8 @@ import { ItemsUses } from './ItemsUse';
 class data {
     constructor(){
         this.wp = {};
-        this.partner = {Name: "Test",Type1: "ground",Type2: null, Spec: "Diglett", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"};
-        this.bag = [{Name:'TestItem',Use:(function(){console.log('Click')}),Type:'Battle',Amount: 5},
-        {Name:'Pokeball',Use:(function(){return(ItemsUses.Pokeball(1))}),Type:'Battle',Amount: 5},
+        this.partner = undefined;
+        this.bag = [{Name:'Pokeball',Use:(function(){return(ItemsUses.Pokeball(1))}),Type:'Battle',Amount: 5},
         {Name:'Ultraball',Use:(function(){return(ItemsUses.Pokeball(2))}),Type:'Battle',Amount: 5},
         {Name: 'Sleep Powder',Use:(function(){return(ItemsUses.StatusItem('Sleep'))}),Type:'Battle',Amount: 5},
         {Name: 'Paralysis Powder',Use:(function(){return(ItemsUses.StatusItem('Paralysis'))}),Type:'Battle',Amount: 5},
@@ -45,12 +45,19 @@ class data {
         this.bag = bag;
     }
 
-    getplist(){
+    getplist = async () =>{
+        this.plist = await AjaxApi.getlist();
+        this.plist[0].PList.map((e,i) => {
+            e.lid = i
+        })
+        console.log('getlist',this.plist);
         return(this.plist);
     }
 
-    setplist(plist){
-        this.plist = plist;
+    setplist = async (plist) =>{
+
+        await AjaxApi.setlist(plist);
+
     }
 
 // Capture Rate = (( 1 + 260 × CatchRate × BallRate × Status# ) ÷ 300 ) ÷ 256
@@ -65,22 +72,28 @@ class data {
     calcCatch(multi){
         const statusrate = (this.wp.status === undefined ? 1 : this.wp.status === 'Freeze' || this.wp.status === 'Sleep' ? 2 : 1.5);
         console.log(this.wp.status,statusrate);
-        let trTemp = this.calcTypeRate(this.wp.Type1,this.partner.Type1);
-        if (this.wp.Type2 !== null) {
-            trTemp = trTemp * this.calcTypeRate(this.wp.Type2,this.partner.Type1);
+        let trTemp;
+        if (this.partner === undefined) {
+            trTemp = 1
+        } else {
+            trTemp = this.calcTypeRate(this.wp.Type1,this.partner.Type1);
+            if (this.wp.Type2 !== null) {
+                trTemp = trTemp * this.calcTypeRate(this.wp.Type2,this.partner.Type1);
+            }
+            if (this.partner.Type2 !== null) {
+                trTemp = trTemp * this.calcTypeRate(this.wp.Type1,this.partner.Type2);
+            }
+            if (this.wp.Type2 !== null && this.partner.Type2 !== null) {
+                trTemp = trTemp * this.calcTypeRate(this.wp.Type2,this.partner.Type2);
+            }
         }
-        if (this.partner.Type2 !== null) {
-            trTemp = trTemp * this.calcTypeRate(this.wp.Type1,this.partner.Type2);
-        }
-        if (this.wp.Type2 !== null && this.partner.Type2 !== null) {
-            trTemp = trTemp * this.calcTypeRate(this.wp.Type2,this.partner.Type2);
-        }
+        
         const typerate = trTemp;
-        console.log('TypeRate',typerate)
-        const catrat = ((110 * this.wp.capture_rate * multi * statusrate * typerate ) / 300) / 256
+        console.log('TypeRate',typerate);
+        const catrat = ((110 * this.wp.capture_rate * multi * statusrate * typerate ) / 300) / 256;
         const b = 1048560 / Math.sqrt(Math.sqrt(16711680 / catrat));
         let ran = (Math.random() * (65536  - 0) + 0);
-        return(ran >= b ? false : true)
+        return(ran >= b ? false : true);
     }
 
 

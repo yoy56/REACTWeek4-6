@@ -7,19 +7,27 @@ const ptemp = [{Name: "Test",Type1: "Ground",Type2: null, Spec: "Diglett", img: 
 
 export const Plist = (props) => {
 
+    if (props.Plist[0] != 'null') {
+        console.log('plist',props.Plist)
+        return(
+            <div className="Plist">
+                <ul>
+                    {props.Plist.map((e,i) => {
+                        console.log('plist',i,e)
+                        return(
+                            <li key={i}>
+                                <Pinfo Name={e.Name} Type1={e.Type1} Type2={e.Type2} Spec={e.Spec} setPartner={props.setPartner} img={e.img} lid={e.lid} removePoke={props.removePoke}/>
+                            </li>
+                        )
+                    })}
+                </ul>
+            </div>
+        ) 
+    } else {
+        return(
+            <></>
+        )
+    }
 
-
-    return(
-        <div className="Plist">
-            <ul>
-                {props.Plist.map((e,i) => {
-                    return(
-                        <li key={i}>
-                            <Pinfo Name={e.Name} Type1={e.Type1} Type2={e.Type2} Spec={e.Spec} setPartner={props.setPartner} img={e.img}/>
-                        </li>
-                    )
-                })}
-            </ul>
-        </div>
-    )
+    
 }
