@@ -11,7 +11,8 @@ class item {
 class Ajax {
     constructor(){
         this.urlBase = 'https://pokeapi.co/api/v2'
-        this.urlid = 'c2cc1ee619ea42e289526df7c3739ecf'
+        this.urlid = 'a93ffbf420f24d0c914adca385964e3b'
+        //Put CrudCrud id here ^
         this.pid = '';
         this.bid = '';
     }
