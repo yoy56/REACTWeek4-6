@@ -10,10 +10,10 @@ import {
 import { dataCalc } from "./data";
 import { BattleScreen } from "./BattleScreen";
 import { Jsoninter } from "./JsonInterpret";
-import { Badge, Card, Container, ListGroup, Modal, Nav, Navbar, NavItem } from "react-bootstrap";
+import { Badge, Card, ListGroup, Modal, Nav, Navbar, NavItem } from "react-bootstrap";
 import ModalHeader from "react-bootstrap/esm/ModalHeader";
 import { Wp } from "./WP";
-import { Button, ModalBody, ModalDialog, ModalFooter, ModalTitle } from "react-bootstrap";
+import { Button, ModalBody, ModalFooter, ModalTitle } from "react-bootstrap";
 import { AjaxApi } from "./Ajax";
 import { Bag } from "./Bag";
 

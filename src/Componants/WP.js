@@ -1,7 +1,5 @@
 import React from "react";
-import { Card, ListGroup } from "react-bootstrap";
-import { dataCalc } from "./data";
-import { Jsoninter } from "./JsonInterpret";
+import { Card } from "react-bootstrap";
 
 export class Wp extends React.Component {
     constructor(props){

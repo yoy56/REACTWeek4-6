@@ -1,7 +1,4 @@
-import { BattleScreen } from "./BattleScreen";
 import { dataCalc } from "./data";
-import { Jsoninter } from "./JsonInterpret";
-import { Wp } from "./WP";
 
 
 
