@@ -1,74 +1,66 @@
 import React from "react";
+import { Card } from "react-bootstrap";
+import { dataCalc } from "./data";
 
 export class Pinfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            Name: props.Name,
-            Spec: props.Spec,
-            Type1: props.Type1,
-            Type2: props.Type2,
-            img: props.img,
-            lid: props.lid
+            poke: this.props.poke
         };
         this.handleClick = this.handleClick.bind(this);
         this.handleClickR = this.handleClickR.bind(this)
+        this.act = false;
     }
 
     handleClick(e){
         e.preventDefault();
         console.log(this.props);
-        this.props.setPartner({Name: this.state.Name,
-            Spec: this.state.Spec,
-            Type1: this.state.Type1,
-            Type2: this.state.Type2,
-            img: this.state.img,
-            lid: this.state.lid});
+        this.props.setPartner(this.state.poke);
     }
 
     handleClickR(e){
-        this.props.removePoke({Name: this.state.Name,
-            Spec: this.state.Spec,
-            Type1: this.state.Type1,
-            Type2: this.state.Type2,
-            img: this.state.img,
-            lid: this.state.lid});
+        this.props.removePoke(this.state.poke);
     }
 
     componentDidUpdate(){
         
-        if (this.state.Spec != this.props.Spec) {
+        if (this.state.poke.Spec != this.props.poke.Spec) {
             this.setState({
-                Name: this.props.Name,
-                Spec: this.props.Spec,
-                Type1: this.props.Type1,
-                Type2: this.props.Type2,
-                img: this.props.img,
-                lid: this.props.lid
+                poke: this.props.poke
             });
         }
     }
 
     render(){
+        let Spec
+        if (this.state.poke.Spec !== undefined) {
+            Spec = this.state.poke.Spec.charAt(0).toUpperCase() + this.state.poke.Spec.slice(1);
+        }
         console.log('Pinfo',this.state.lid,this.state)
         return(
-            <div>
-                <div>
-                    {this.state.Name === null ? <h3>{this.state.Spec}</h3> : <div>
-                        <h3>{this.state.Name}</h3>
-                        <h6>{this.state.Spec}</h6>
-                        </div>}
-                    <img src={this.state.img}/>
-                </div>
-                <div>
-                    <span>
-                        <img src={`./Types/64px-${this.state.Type1}IC.png`}/>
-                        {this.state.Type2 === null ? <></> : <img src={`./Types/64px-${this.state.Type2}IC.png`}/>}
-                    </span>
-                </div>
-                <button onClick={this.handleClick}>Partner</button>
-                <button onClick={this.handleClickR}>Release</button>
-            </div>
+            <Card>
+                <Card.Body>
+                    <div>
+                        {this.state.poke.Name === null ? <Card.Title>{Spec}</Card.Title> : <div>
+                            <Card.Title>{this.state.poke.Name}</Card.Title>
+                            <Card.Subtitle>{Spec}</Card.Subtitle>
+                            </div>}
+                        <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.state.poke.Id}.png`}/>
+                    </div>
+                    <div>
+                        <span>
+                            <img src={`./Types/64px-${this.state.poke.Type1}IC.png`}/>
+                            {this.state.poke.Type2 === null ? <></> : <img src={`./Types/64px-${this.state.poke.Type2}IC.png`}/>}
+                        </span>
+                    </div>
+                    <Card.Footer>
+                        {this.act = (dataCalc.getpartner() === undefined ? false : this.state.poke.lid == dataCalc.getpartner().lid)}
+                        <button disabled={this.act} onClick={this.handleClick}>Partner</button>
+                        <button disabled={this.act} onClick={this.handleClickR}>Release</button>
+                    </Card.Footer> 
+                </Card.Body>
+            </Card>
         )
     }
 }

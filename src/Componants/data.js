@@ -9,16 +9,11 @@ import { AjaxApi } from "./Ajax";
 class data {
     constructor(){
         this.wp = {};
-        this.partner = undefined;
-        this.bag = [{Name:'Pokeball',Use:(function(){return(ItemsUses.Pokeball(1))}),Type:'Battle',Amount: 5},
-        {Name:'Ultraball',Use:(function(){return(ItemsUses.Pokeball(2))}),Type:'Battle',Amount: 5},
-        {Name: 'Sleep Powder',Use:(function(){return(ItemsUses.StatusItem('Sleep'))}),Type:'Battle',Amount: 5},
-        {Name: 'Paralysis Powder',Use:(function(){return(ItemsUses.StatusItem('Paralysis'))}),Type:'Battle',Amount: 5},
-        {Name: 'Poison Powder',Use:(function(){return(ItemsUses.StatusItem('Poison'))}),Type:'Battle',Amount: 5},
-        {Name: 'Freeze Powder',Use:(function(){return(ItemsUses.StatusItem('Freeze'))}),Type:'Battle',Amount: 5},
-        {Name: 'Burn Powder',Use:(function(){return(ItemsUses.StatusItem('Burn'))}),Type:'Battle',Amount: 5}];
-        this.plist = [{Name: "Test",Type1: "ground",Type2: null, Spec: "Diglett", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"}
-        ,{Name: null,Type1: "ghost",Type2: "flying", Spec: "Drifblim", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/426.png"}]
+        this.partner = {};
+        this.bag = [];
+        this.plist = {};
+
+        this.tempBag = [];
     }
 
     getwp(){
@@ -42,10 +37,41 @@ class data {
     }
 
     setbag(bag){
-        this.bag = bag;
+        console.log('setbag',bag)
+        this.bag = [{...this.bag[0],PList: bag}];
+        console.log('set this.bag',this.bag)
+        this.pushbag(this.bag);
     }
 
-    getplist = async () =>{
+    pullbag = async () => {
+        this.bag = await AjaxApi.getbag();
+        this.bag[0].PList.map((e) => {
+            e.Use = (function(){return(e.ITy == 'Status' ? ItemsUses.StatusItem(e.Ival) : e.ITy == 'Pokeball' ? ItemsUses.Pokeball(e.Ival) : console.error('Non Proper Use-Type:',e.ITy))})
+        })
+        console.log('getlist',this.bag);
+        return(this.bag);
+    }
+
+    pushbag = async (bag) => {
+        console.log('pushbag',bag)
+        delete bag[0]._id;
+        console.log('pushbag',bag)
+        await AjaxApi.setbag(bag[0]);
+    }
+
+    getplist(){
+        return(this.plist)
+    }
+
+    setplist(plist){
+        plist.map((e,i) => {
+            e.lid = i
+        })
+        this.plist = plist;
+        this.pushplist(plist);
+    }
+
+    pullplist = async () => {
         this.plist = await AjaxApi.getlist();
         this.plist[0].PList.map((e,i) => {
             e.lid = i
@@ -54,9 +80,74 @@ class data {
         return(this.plist);
     }
 
-    setplist = async (plist) =>{
-
+    pushplist = async (plist) => {
         await AjaxApi.setlist(plist);
+    }
+
+    addItem(name,type,amount,use,bag){
+        let idx
+        let ele = bag.find((e,index) => {
+            idx = index
+            return e.Name == name
+        });
+
+        if (ele === undefined) {
+            bag.push({Name:name,Use:use,Type:type,Amount: amount})
+        } else {
+            bag[idx].Amount += amount;
+        }
+    }
+
+    bagReward(cr){
+        let crAmount = 265 - cr;
+
+        while (crAmount > 10) {
+            if (crAmount > 15) {
+                let ran = Math.floor(Math.random() * (7  - 1) + 1);
+                switch (ran) {
+                    case 1:
+                        this.addItem('Freeze Powder','Battle',1,function(){return(ItemsUses.StatusItem('Freeze'))},this.tempBag);
+                        crAmount -= 15;
+                        break;
+                    case 2:
+                        this.addItem('Sleep Powder','Battle',1,function(){return(ItemsUses.StatusItem('Sleep'))},this.tempBag);
+                        crAmount -= 15;
+                        break;
+                    default:
+                        this.addItem('Ultraball','Battle',1,function(){return(ItemsUses.Pokeball(2))},this.tempBag);
+                        crAmount -= 15;
+                        break;
+                }
+            } 
+            if (crAmount > 10) {
+                let ran = Math.floor(Math.random() * (6  - 1) + 1);
+                switch (ran) {
+                    case 1:
+                        //Paralysis
+                        this.addItem('Paralysis Powder','Battle',1,function(){return(ItemsUses.StatusItem('Paralysis'))},this.tempBag);
+                        crAmount -= 10;
+                        break;
+                    case 2:
+                        //Burn
+                        this.addItem('Burn Powder','Battle',1,function(){return(ItemsUses.StatusItem('Burn'))},this.tempBag);
+                        crAmount -= 10;
+                        break;
+                    case 3: 
+                        // poison
+                        this.addItem('Poison Powder','Battle',1,function(){return(ItemsUses.StatusItem('Poison'))},this.tempBag);
+                        break;
+                    default:
+                        // Great
+                        this.addItem('Greatball','Battle',1,function(){return(ItemsUses.Pokeball(1.5))},this.tempBag);
+                        crAmount -= 10;
+                        break;
+                }
+            }
+        }
+        //Pokeball = crAmount
+        this.addItem('Pokeball','Battle',crAmount,function(){return(ItemsUses.Pokeball(1))},this.tempBag);
+
+        return this.tempBag
 
     }
 

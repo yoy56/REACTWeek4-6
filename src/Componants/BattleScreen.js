@@ -1,4 +1,5 @@
 import React from "react";
+import { Card } from "react-bootstrap";
 import { Bag } from "./Bag";
 import { dataCalc } from "./data";
 import { Jsoninter } from "./JsonInterpret";
@@ -9,9 +10,9 @@ export class BattleScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            Wp: this.props.Wp,
-            Partner: this.props.Partner,
-            Bag: this.props.Bag
+            Wp: props.Wp,
+            Partner: props.Partner,
+            Bag: props.Bag
         }
         this.handleClick = this.handleClick.bind(this);
     }
@@ -19,9 +20,15 @@ export class BattleScreen extends React.Component {
     
 
     componentDidUpdate(){
-        console.log('Update',this.state);
+        console.log('BSUpdate',this.state,this.props.Wp != this.state.Wp,this.props.Partner != this.state.Partner,this.props.Bag.length != this.state.Bag.length);
         if (this.props.Wp != this.state.Wp){
-            this.setState({Wp: this.props.Wp})
+            this.setState({...this.state, Wp: this.props.Wp})
+        }
+        if (this.props.Partner != this.state.Partner){
+            this.setState({...this.state, Partner: this.props.Partner})
+        }
+        if (this.props.Bag.length != this.state.Bag.length){
+            this.setState({...this.state, Bag: this.props.Bag})
         }
     }
 
@@ -37,15 +44,21 @@ export class BattleScreen extends React.Component {
         const poke = await Jsoninter.Wgrab();
         console.log(poke);
         dataCalc.setwp(poke);
-        this.props.updatenp(true);
+        this.props.updatenp(false);
     }
 
     render(){
         return(
             <div className="row">
                 <div className="col">
-                    <Wp Wp={this.state.Wp} />
-                    <button onClick={this.handleClick}>Find New Pokemon</button>
+                <Card>
+                    <Card.Body>
+                        <Wp Wp={this.state.Wp} />
+                    </Card.Body>
+                    <Card.Footer>
+                        <button onClick={this.handleClick}>Find New Pokemon</button>
+                    </Card.Footer>
+                </Card>
                 </div>
                 <div className="col">
                     <Partner Partner={this.state.Partner}/>

@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import bootstrap from '../node_modules/bootstrap/dist/js/bootstrap';
 import Index from './Componants';
+//import '../src/custom.scss';
 import '../node_modules/bootstrap/dist/css/bootstrap.css'
 import { BattleScreen } from './Componants/BattleScreen';
 

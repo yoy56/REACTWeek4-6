@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import { ListGroup } from "react-bootstrap";
 import { Pinfo } from "./PInfo";
 
 const ptemp = [{Name: "Test",Type1: "Ground",Type2: null, Spec: "Diglett", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"}
@@ -7,20 +8,20 @@ const ptemp = [{Name: "Test",Type1: "Ground",Type2: null, Spec: "Diglett", img: 
 
 export const Plist = (props) => {
 
-    if (props.Plist[0] != 'null') {
+    if (props.Plist[0] != undefined) {
         console.log('plist',props.Plist)
         return(
             <div className="Plist">
-                <ul>
+                <ListGroup>
                     {props.Plist.map((e,i) => {
                         console.log('plist',i,e)
                         return(
-                            <li key={i}>
-                                <Pinfo Name={e.Name} Type1={e.Type1} Type2={e.Type2} Spec={e.Spec} setPartner={props.setPartner} img={e.img} lid={e.lid} removePoke={props.removePoke}/>
-                            </li>
+                            <ListGroup.Item key={i}>
+                                <Pinfo poke={e} setPartner={props.setPartner} removePoke={props.removePoke}/>
+                            </ListGroup.Item>
                         )
                     })}
-                </ul>
+                </ListGroup>
             </div>
         ) 
     } else {

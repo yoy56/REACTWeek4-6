@@ -1,15 +1,20 @@
 import React from "react";
+import { Badge, Card } from "react-bootstrap";
+import { dataCalc } from "./data";
 
 
 export class Item extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            Name: this.props.Item.Name,
-            Use: this.props.Item.Use,
-            Amount: this.props.Item.Amount
+            Name: props.Item.Name,
+            Use: props.Item.Use,
+            Amount: props.Item.Amount,
+            Id: props.Id,
+            Type: props.Type
         }
         this.handelClick = this.handelClick.bind(this);
+        this.act = false;
     }
 
     componentDidUpdate(){
@@ -21,14 +26,24 @@ export class Item extends React.Component {
         console.log('test',test);
         this.props.updatenp(test);
         console.log('State',this.state);
+        this.setState({...this.state, Amount: this.state.Amount - 1})
+        let tempbag = dataCalc.getbag()[0].PList;
+        console.log(tempbag[this.state.Id].Amount)
+        tempbag[this.state.Id].Amount = this.state.Amount;
+        dataCalc.setbag(tempbag);
     }
 
     render(){
         return(
-            <div>
-                <h5>{this.state.Name}-{this.state.Amount}</h5>
-                <button onClick={this.handelClick}>Use</button>
-            </div>
+            <Card>
+                <Card.Header>
+                    <h5>{this.state.Name} <Badge pill bg="primary">x{this.state.Amount}</Badge></h5>
+                </Card.Header>
+                <Card.Body>
+                    {this.act=(this.state.Amount == 0)}
+                    {this.state.Type === 'All' ? <></> : <button disabled={this.act} onClick={this.handelClick}>Use</button>}
+                </Card.Body>
+            </Card>
         )
     }
 }

@@ -8,7 +8,7 @@ class JsonInterpret {
 
     pokegrab = async(name) => {
         const data = await AjaxApi.get(name);
-        let poke = {Id: data.id, Name: null,Type1: data.types[0].type.name,Type2: data.types.length == 1 ? null : data.types[1].type.name, Spec: data.species.name, img: data.sprites.front_default}
+        let poke = {Id: data.id, Name: null,Type1: data.types[0].type.name,Type2: data.types.length == 1 ? null : data.types[1].type.name, Spec: data.species.name}
         return(poke);
     }
 
@@ -17,7 +17,7 @@ class JsonInterpret {
         const data = await AjaxApi.get(`pokemon/${ran}`);
         const data2 = await AjaxApi.get(`pokemon-species/${ran}`);
         console.log(data,data2);
-        let poke = {Id: data.id, Name: null,Type1: data.types[0].type.name,Type2: data.types.length == 1 ? null : data.types[1].type.name, Spec: data.species.name, img: data.sprites.front_default, capture_rate: data2.capture_rate}
+        let poke = {Id: data.id, Name: null,Type1: data.types[0].type.name,Type2: data.types.length == 1 ? null : data.types[1].type.name, Spec: data.species.name, capture_rate: data2.capture_rate}
         return(poke);
     }
 }

@@ -10,27 +10,31 @@ import {
 import { dataCalc } from "./data";
 import { BattleScreen } from "./BattleScreen";
 import { Jsoninter } from "./JsonInterpret";
-import { Modal } from "react-bootstrap";
+import { Badge, Card, Container, ListGroup, Modal, Nav, Navbar, NavItem } from "react-bootstrap";
 import ModalHeader from "react-bootstrap/esm/ModalHeader";
 import { Wp } from "./WP";
 import { Button, ModalBody, ModalDialog, ModalFooter, ModalTitle } from "react-bootstrap";
 import { AjaxApi } from "./Ajax";
+import { Bag } from "./Bag";
 
 export default class Index extends React.Component {
     constructor(props){
         super(props);
         this.state={
             Partner: dataCalc.getpartner(),
-            PList: ['null'],
-            Bag: dataCalc.getbag(),
-            Wp: dataCalc.getwp(),
+            PList: [],
+            Bag: [],
+            Wp: {},
             Show: false,
             NameChange: '',
-            Dp: {}
+            Dp: {},
+            Showb: false,
+            Ab: []
         }
         this.setPartner = this.setPartner.bind(this);
         this.Home = this.Home.bind(this);
         this.Battle = this.Battle.bind(this);
+        this.Baglist = this.Baglist.bind(this);
         this.updatenp = this.updatenp.bind(this);
         this.handelChange = this.handelChange.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -56,6 +60,7 @@ export default class Index extends React.Component {
         if (np == true) {
             this.newPoke();
         }
+        this.setState({...this.state, Wp: dataCalc.getwp()})
     }
 
     removePoke(poke){
@@ -67,8 +72,10 @@ export default class Index extends React.Component {
 
         let plistg = await dataCalc.getplist();
         let cpoke = dataCalc.getwp();
-        if (e.target.id === "Yes" && this.state.NameChange != "") {
-            cpoke.Name = this.state.NameChange;
+        if (e !== undefined) {
+            if (e.target.id === "Yes" && this.state.NameChange != "") {
+                cpoke.Name = this.state.NameChange;
+            }
         }
         cpoke.lid = plistg[0].PList.length
         console.log(cpoke);
@@ -92,7 +99,13 @@ export default class Index extends React.Component {
 
     handleCloser = async (e) =>{
 
-        if (e.target.id === "No") {
+        if (e === undefined) {
+            this.setState({...this.state, Show: false, Dp: {}})
+            return false;
+        }
+
+        if (e.target.id !== "Yes") {
+            this.setState({...this.state, Show: false, Dp: {}})
             return false;
         } 
 
@@ -102,9 +115,20 @@ export default class Index extends React.Component {
         console.log('del', this.state.PList);
 
         await AjaxApi.setlist({PList: this.state.PList})
+
+        let tempb = dataCalc.bagReward(this.state.Dp.capture_rate);
         
         console.log('close');
-        this.setState({...this.state, Show: false, Dp: {}})
+        this.setState({...this.state, Show: false, Dp: {}, Showb: true, Ab: tempb})
+    }
+
+    handleCloseb = async (e)=>{
+        let tempbag = [...dataCalc.getbag()[0].PList];
+        this.state.Ab.forEach(el => {
+            dataCalc.addItem(el.Name,el.Type,el.Amount,el.Use,tempbag);
+        });
+        dataCalc.setbag(tempbag);
+        this.setState({...this.state, Showb: false, Ab: [], Bag: tempbag});
     }
 
     handelChange(e){
@@ -122,58 +146,77 @@ export default class Index extends React.Component {
 
     componentDidMount = async() => {
         this.setup();
-        console.log('mount',this.state);
-        if (this.state.Wp.Spec === undefined) {
-            const poke = await Jsoninter.Wgrab();
-            if (this.state.Partner === undefined) {
-                const par = await dataCalc.getplist()[0];
-                this.setState({...this.state, Partner: par});
-            }
-            this.setState({...this.state, Wp: poke});
-            dataCalc.setwp(poke);
-            console.log('Mount',this.state)
-        }
+        
         
     }
 
 
     setup = async () => {
-        //AjaxApi.setup();
-        
-        console.log(this.state.PList[0] == 'null');
-        if (this.state.PList[0] == 'null') {
+        await AjaxApi.setup();
+        console.log(this.state.PList[0] == undefined);
+        if (this.state.PList[0] == undefined) {
             console.log('setup',this.state);
-            let Plistg = await dataCalc.getplist();
+            let Plistg = await dataCalc.pullplist();
+            let Bagg = await dataCalc.pullbag();
+            //let Bagg = [{IBag:[]}];
             console.log('list',Plistg[0].PList);
-            this.setState({...this.state, PList: Plistg[0].PList});
+            this.setState({...this.state, PList: Plistg[0].PList, Bag: Bagg[0].PList});
+        }
+
+
+        console.log('mount',this.state,this.state.Partner.Spec === undefined);
+        if (this.state.Wp.Spec === undefined) {
+            const poke = await Jsoninter.Wgrab();
+            this.setState({...this.state, Wp: poke});
+            dataCalc.setwp(poke);
+            console.log('Mount',this.state)
+        }
+        if (this.state.Partner.Spec === undefined) {
+            const par = dataCalc.getplist();
+            console.log('partner', par[0].PList[0])
+            this.setPartner(par[0].PList[0])
         }
     }
 
     render(){
         console.log('Ren',this.state)
         return(
+
             <Router>
-                <div className='container'>
-                    <div>
-                        <ul>
-                            <li>
-                                <Link to="/">Pokemon</Link>
-                            </li>
-                            <li>
-                                <Link to="/battle">Battle</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <Switch>
-                        <Route exact path="/">
-                            <this.Home/>
-                        </Route>
-                        <Route path="/battle">
-                            <this.Battle />
-                        </Route>
-                    </Switch>
+                <div>
+                <Navbar>
+                    <Nav>
+                        <NavItem eventkey={1} href="/">
+                        <Nav.Link as={Link} to="/" >Pokemon</Nav.Link>
+                        </NavItem>
+                    </Nav>
+                    <Nav>
+                        <NavItem eventkey={1} href="/">
+                        <Nav.Link as={Link} to="/battle" >Battle</Nav.Link>
+                        </NavItem>
+                    </Nav>
+                    <Nav>
+                        <NavItem eventkey={1} href="/">
+                        <Nav.Link as={Link} to="/bag" >Bag</Nav.Link>
+                        </NavItem>
+                    </Nav>
+                </Navbar>
+                </div>
+                <div>
+                <Switch>
+                    <Route exact path="/">
+                        <this.Home/>
+                    </Route>
+                    <Route path="/battle">
+                        <this.Battle />
+                    </Route>
+                    <Route path="/bag">
+                        <this.Baglist />
+                    </Route>
+                </Switch>
                 </div>
             </Router>
+            
         )
     }
 
@@ -184,7 +227,7 @@ export default class Index extends React.Component {
                 <Partner Partner={this.state.Partner}/>
           </div>
           <div className='col'>
-                <Modal show={this.state.Show} onHide={this.handleClose}>
+                <Modal show={this.state.Show} onHide={this.handleCloser}>
                     <ModalHeader>
                         <ModalTitle>
                         Release {this.state.Dp.Name === null ? this.state.Dp.Spec : this.state.Dp.Name}?
@@ -206,6 +249,34 @@ export default class Index extends React.Component {
                     </Button>
                     <Button variant="primary" onClick={this.handleCloser} id="Yes">
                         Yes
+                    </Button>
+                    </ModalFooter>
+                </Modal>
+                <Modal show={this.state.Showb} onHide={this.handleCloseb}>
+                    <ModalHeader>
+                        <ModalTitle>
+                        Bag
+                        </ModalTitle>
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className="row">
+                            <div className="col">
+                                New Items:
+                            </div>
+                            <div className="col">
+                                {this.state.Ab.map((item,index) => <ListGroup.Item key={`${index}`}>
+                                <Card>
+                                    <Card.Header>
+                                        <h5>{item.Name} <Badge pill bg="primary">x{item.Amount}</Badge></h5>
+                                    </Card.Header>
+                                </Card>
+                                </ListGroup.Item>)}
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                    <Button variant="primary" onClick={this.handleCloseb} id="OK">
+                        OK
                     </Button>
                     </ModalFooter>
                 </Modal>
@@ -246,9 +317,18 @@ export default class Index extends React.Component {
                     </Button>
                     </ModalFooter>
                 </Modal>
-                <BattleScreen Bag={dataCalc.getbag()} Wp={dataCalc.getwp()} Partner={dataCalc.getpartner()} updatenp={this.updatenp}/>
+                <BattleScreen Bag={this.state.Bag} Wp={this.state.Wp} Partner={this.state.Partner} updatenp={this.updatenp}/>
             </div>
         
+        )
+    }
+
+    Baglist(){
+        return(
+            <div>
+                {console.log(this.state)}
+                <Bag Type='All' Bag={this.state.Bag}/>
+            </div>
         )
     }
 }
