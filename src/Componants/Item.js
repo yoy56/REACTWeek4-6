@@ -17,18 +17,12 @@ export class Item extends React.Component {
         this.act = false;
     }
 
-    componentDidUpdate(){
-        console.log('didupdate',this.state);
-    }
 
     handelClick = async() =>{
         let test = await this.state.Use();
-        console.log('test',test);
         this.props.updatenp(test);
-        console.log('State',this.state);
         this.setState({...this.state, Amount: this.state.Amount - 1})
         let tempbag = dataCalc.getbag()[0].PList;
-        console.log(tempbag[this.state.Id].Amount)
         tempbag[this.state.Id].Amount = this.state.Amount;
         dataCalc.setbag(tempbag);
     }

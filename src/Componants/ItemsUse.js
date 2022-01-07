@@ -13,10 +13,8 @@ class ItemUse {
 
     Pokeball = async(multi) =>{
         if (dataCalc.calcCatch(multi)) {
-            console.log('catch');
             return(true)
         }
-        console.log('fail');
         return(false)
         
     }

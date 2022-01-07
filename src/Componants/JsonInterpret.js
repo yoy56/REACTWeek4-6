@@ -16,7 +16,6 @@ class JsonInterpret {
         let ran = Math.floor(Math.random() * (899 - 1) + 1)
         const data = await AjaxApi.get(`pokemon/${ran}`);
         const data2 = await AjaxApi.get(`pokemon-species/${ran}`);
-        console.log(data,data2);
         let poke = {Id: data.id, Name: null,Type1: data.types[0].type.name,Type2: data.types.length == 1 ? null : data.types[1].type.name, Spec: data.species.name, capture_rate: data2.capture_rate}
         return(poke);
     }

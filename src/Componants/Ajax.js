@@ -17,7 +17,6 @@ class Ajax {
     }
 
     get = async (add) =>{
-        console.log(`${this.urlBase}/${add}`)
         try {
             const resp = await fetch(`${this.urlBase}/${add}`);
             const data = await resp.json();
@@ -28,7 +27,6 @@ class Ajax {
     }
 
     getlist = async () => {
-        console.log(`https://crudcrud.com/api/${this.urlid}/PList`)
         try {
             const resp = await fetch(`https://crudcrud.com/api/${this.urlid}/PList`,{
                 method: 'GET'
@@ -42,7 +40,6 @@ class Ajax {
     } 
 
     setlist = async (list) => {
-        console.log(`https://crudcrud.com/api/${this.urlid}/PList`,list)
         try {
             const resp = await fetch(`https://crudcrud.com/api/${this.urlid}/PList/${this.pid}`,
             {method: 'PUT',
@@ -57,7 +54,6 @@ class Ajax {
     } 
 
     getbag = async () => {
-        console.log(`https://crudcrud.com/api/${this.urlid}/IBag`)
         try {
             const resp = await fetch(`https://crudcrud.com/api/${this.urlid}/IBag`,{
                 method: 'GET'
@@ -71,7 +67,6 @@ class Ajax {
     } 
 
     setbag = async (list) => {
-        console.log(`https://crudcrud.com/api/${this.urlid}/IBag`,list)
         try {
             const resp = await fetch(`https://crudcrud.com/api/${this.urlid}/IBag/${this.bid}`,
             {method: 'PUT',
@@ -88,7 +83,6 @@ class Ajax {
     setup = async () =>{
         let test1 = await this.getlist();
         let test2 = await this.getbag();
-        console.log(test1,test2);
         if (test1 === undefined) {
             let defvalp = new item([{ Id: 50, Name: "Test",Type1: "ground",Type2: null, Spec: "Diglett", capture_rate:255}
                 ,{Id: 426, Name: null,Type1: "ghost",Type2: "flying", Spec: "Drifblim", capture_rate:60}]

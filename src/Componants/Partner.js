@@ -11,9 +11,7 @@ export class Partner extends React.Component {
 
 
     componentDidUpdate(){
-        console.log('PUpdate',this.props.Partner)
         if (this.props.Partner != this.state.Partner){
-            console.log(this.props.Partner,this.state.Partner)
             this.setState({Partner: this.props.Partner})
         }
     }

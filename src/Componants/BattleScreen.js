@@ -20,7 +20,6 @@ export class BattleScreen extends React.Component {
     
 
     componentDidUpdate(){
-        console.log('BSUpdate',this.state,this.props.Wp != this.state.Wp,this.props.Partner != this.state.Partner,this.props.Bag.length != this.state.Bag.length);
         if (this.props.Wp != this.state.Wp){
             this.setState({...this.state, Wp: this.props.Wp})
         }
@@ -32,17 +31,8 @@ export class BattleScreen extends React.Component {
         }
     }
 
-    componentDidMount = async() =>{
-        // const poke = await Jsoninter.Wgrab();
-        // this.setState({Wp: poke});
-        // dataCalc.setwp(poke);
-        console.log('Mount',this.state)
-    }
-
     handleClick = async() =>{
-        console.log('new');
         const poke = await Jsoninter.Wgrab();
-        console.log(poke);
         dataCalc.setwp(poke);
         this.props.updatenp(false);
     }

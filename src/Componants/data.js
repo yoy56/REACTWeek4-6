@@ -37,9 +37,7 @@ class data {
     }
 
     setbag(bag){
-        console.log('setbag',bag)
         this.bag = [{...this.bag[0],PList: bag}];
-        console.log('set this.bag',this.bag)
         this.pushbag(this.bag);
     }
 
@@ -48,14 +46,11 @@ class data {
         this.bag[0].PList.map((e) => {
             e.Use = (function(){return(e.ITy == 'Status' ? ItemsUses.StatusItem(e.Ival) : e.ITy == 'Pokeball' ? ItemsUses.Pokeball(e.Ival) : console.error('Non Proper Use-Type:',e.ITy))})
         })
-        console.log('getlist',this.bag);
         return(this.bag);
     }
 
     pushbag = async (bag) => {
-        console.log('pushbag',bag)
         delete bag[0]._id;
-        console.log('pushbag',bag)
         await AjaxApi.setbag(bag[0]);
     }
 
@@ -76,7 +71,6 @@ class data {
         this.plist[0].PList.map((e,i) => {
             e.lid = i
         })
-        console.log('getlist',this.plist);
         return(this.plist);
     }
 
@@ -162,7 +156,6 @@ class data {
 
     calcCatch(multi){
         const statusrate = (this.wp.status === undefined ? 1 : this.wp.status === 'Freeze' || this.wp.status === 'Sleep' ? 2 : 1.5);
-        console.log(this.wp.status,statusrate);
         let trTemp;
         if (this.partner === undefined) {
             trTemp = 1
@@ -180,7 +173,6 @@ class data {
         }
         
         const typerate = trTemp;
-        console.log('TypeRate',typerate);
         const catrat = ((110 * this.wp.capture_rate * multi * statusrate * typerate ) / 300) / 256;
         const b = 1048560 / Math.sqrt(Math.sqrt(16711680 / catrat));
         let ran = (Math.random() * (65536  - 0) + 0);
@@ -189,7 +181,6 @@ class data {
 
 
     calcTypeRate(t1,t2){
-        console.log('ctr',t1,t2);
         switch (t1) {
             case 'normal':
                 switch (t2) {

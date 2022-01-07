@@ -12,21 +12,14 @@ export class Wp extends React.Component {
     }
 
     componentDidUpdate(){
-        console.log('update',this.state)
         if (this.props.Wp.Spec != this.state.Wp.Spec){
-            console.log('fix');
             this.setState({Wp: this.props.Wp})
         }
-    }
-
-    componentDidMount(){
-        console.log('Mount',this.state)
     }
 
     render(){
         let Spec
         if (this.state.Wp.Spec !== undefined) {
-            console.log('CharAt',this.state.Wp.Spec)
             Spec = this.state.Wp.Spec.charAt(0).toUpperCase() + this.state.Wp.Spec.slice(1);
         }
         return(

@@ -9,12 +9,10 @@ const ptemp = [{Name: "Test",Type1: "Ground",Type2: null, Spec: "Diglett", img: 
 export const Plist = (props) => {
 
     if (props.Plist[0] != undefined) {
-        console.log('plist',props.Plist)
         return(
             <div className="Plist">
                 <ListGroup>
                     {props.Plist.map((e,i) => {
-                        console.log('plist',i,e)
                         return(
                             <ListGroup.Item key={i}>
                                 <Pinfo poke={e} setPartner={props.setPartner} removePoke={props.removePoke}/>

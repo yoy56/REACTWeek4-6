@@ -15,7 +15,6 @@ export class Pinfo extends React.Component {
 
     handleClick(e){
         e.preventDefault();
-        console.log(this.props);
         this.props.setPartner(this.state.poke);
     }
 
@@ -37,7 +36,6 @@ export class Pinfo extends React.Component {
         if (this.state.poke.Spec !== undefined) {
             Spec = this.state.poke.Spec.charAt(0).toUpperCase() + this.state.poke.Spec.slice(1);
         }
-        console.log('Pinfo',this.state.lid,this.state)
         return(
             <Card>
                 <Card.Body>

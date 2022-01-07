@@ -50,13 +50,11 @@ export default class Index extends React.Component {
     newPoke() {
         
 
-        console.log('np');
         this.setState({...this.state, Show: true})
         
     }
 
     updatenp(np){
-        console.log('update2',this.state)
         if (np == true) {
             this.newPoke();
         }
@@ -64,7 +62,6 @@ export default class Index extends React.Component {
     }
 
     removePoke(poke){
-        console.log('rp');
         this.setState({...this.state, Show: true, Dp: poke})
     }
 
@@ -78,22 +75,17 @@ export default class Index extends React.Component {
             }
         }
         cpoke.lid = plistg[0].PList.length
-        console.log(cpoke);
         plistg[0].PList.push(cpoke);
         delete plistg[0]._id;
         delete plistg[0].lid;
-        console.log(plistg[0]);
         await AjaxApi.setlist(plistg[0]);
 
         this.setState({...this.state,PList: plistg[0].PList});
 
         const npoke = await Jsoninter.Wgrab();
-        console.log(npoke);
         dataCalc.setwp(npoke);
         let poke = dataCalc.getwp();
         
-        console.log(poke);
-        console.log('close');
         this.setState({...this.state, Show: false, Wp: poke, NameChange: ""})
     }
 
@@ -109,16 +101,12 @@ export default class Index extends React.Component {
             return false;
         } 
 
-        console.log(this.state.Dp.lid,this.state.PList);
         this.state.PList.splice(this.state.Dp.lid,1);
-
-        console.log('del', this.state.PList);
 
         await AjaxApi.setlist({PList: this.state.PList})
 
         let tempb = dataCalc.bagReward(this.state.Dp.capture_rate);
         
-        console.log('close');
         this.setState({...this.state, Show: false, Dp: {}, Showb: true, Ab: tempb})
     }
 
@@ -135,14 +123,7 @@ export default class Index extends React.Component {
         this.setState({...this.state, NameChange: e.target.value});
     }
 
-    componentDidUpdate = async () =>{
-        // let plistg = await dataCalc.getplist();
-        // if (this.state.PList != plistg) {
-        //     console.log('update',this.state);
-        //     console.log(plistg);
-        //     this.setState({...this.state, PList: plistg})
-        // }
-    }
+   
 
     componentDidMount = async() => {
         this.setup();
@@ -153,33 +134,25 @@ export default class Index extends React.Component {
 
     setup = async () => {
         await AjaxApi.setup();
-        console.log(this.state.PList[0] == undefined);
         if (this.state.PList[0] == undefined) {
-            console.log('setup',this.state);
             let Plistg = await dataCalc.pullplist();
             let Bagg = await dataCalc.pullbag();
-            //let Bagg = [{IBag:[]}];
-            console.log('list',Plistg[0].PList);
             this.setState({...this.state, PList: Plistg[0].PList, Bag: Bagg[0].PList});
         }
 
 
-        console.log('mount',this.state,this.state.Partner.Spec === undefined);
         if (this.state.Wp.Spec === undefined) {
             const poke = await Jsoninter.Wgrab();
             this.setState({...this.state, Wp: poke});
             dataCalc.setwp(poke);
-            console.log('Mount',this.state)
         }
         if (this.state.Partner.Spec === undefined) {
             const par = dataCalc.getplist();
-            console.log('partner', par[0].PList[0])
             this.setPartner(par[0].PList[0])
         }
     }
 
     render(){
-        console.log('Ren',this.state)
         return(
 
             <Router>
@@ -326,7 +299,6 @@ export default class Index extends React.Component {
     Baglist(){
         return(
             <div>
-                {console.log(this.state)}
                 <Bag Type='All' Bag={this.state.Bag}/>
             </div>
         )
